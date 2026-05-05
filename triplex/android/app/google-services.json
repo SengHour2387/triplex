@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "55462983840",
+    "project_id": "triplex-2d489",
+    "storage_bucket": "triplex-2d489.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55462983840:android:aee259e13b7ccebad0f1c5",
+        "android_client_info": {
+          "package_name": "com.templex.triplex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFMJEllCGUb93uOvFNxHPNKcJvC3aHT2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
