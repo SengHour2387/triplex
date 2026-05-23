@@ -16,3 +16,12 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     username VARCHAR(50) UNIQUE NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS media (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    uploader_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    cloud_url TEXT NOT NULL,
+    public_id TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);

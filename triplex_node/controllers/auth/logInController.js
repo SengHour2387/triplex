@@ -5,11 +5,11 @@ import { generateAccessToken, generateRefreshToken } from '../../core/tokenGener
 export async function login(req, res) {
   const { email, password } = req.body;
   try {
-    const result = await pool.query('SELECT id, username, email, password, token_version FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT id, username, email, password, token_version, avatar_url FROM users WHERE email = $1', [email]);
     if (result.rows.length === 0) {
       return res.status(400).json({
         status: 'error',
-        message: 'Invalid email or password'
+        message: 'auth/login_invalid_email_password'
       });
     }
 
@@ -18,7 +18,7 @@ export async function login(req, res) {
     if (!passwordMatch) {
       return res.status(400).json({
         status: 'error',
-        message: 'Invalid email or password'
+        message: 'auth/login_invalid_email_password'
       });
     }
 
@@ -27,13 +27,14 @@ export async function login(req, res) {
 
     res.status(200).json({
       status: 'success',
-      message: 'Logged in successfully',
+      message: 'auth/login_success',
       accessToken,
       refreshToken,
       user: {
         id: user.id,
         username: user.username,
         email: user.email,
+        avatar_url: user.avatar_url
       }
     });
   } catch (error) {
@@ -49,11 +50,11 @@ export async function login(req, res) {
 export async function loginUsername(req, res) {
   const { username, password } = req.body;
   try {
-    const result = await pool.query('SELECT id, username, email, password, token_version FROM users WHERE username = $1', [username]);
+    const result = await pool.query('SELECT id, username, email, password, token_version, avatar_url FROM users WHERE username = $1', [username]);
     if (result.rows.length === 0) {
       return res.status(400).json({
         status: 'error',
-        message: 'Invalid username or password'
+        message: 'auth/login_invalid_email_password'
       });
     }
 
@@ -62,7 +63,7 @@ export async function loginUsername(req, res) {
     if (!passwordMatch) {
       return res.status(400).json({
         status: 'error',
-        message: 'Invalid username or password'
+        message: 'auth/login_invalid_email_password'
       });
     }
 
@@ -71,20 +72,21 @@ export async function loginUsername(req, res) {
 
     res.status(200).json({
       status: 'success',
-      message: 'Logged in successfully',
+      message: 'auth/login_success',
       accessToken,
       refreshToken,
       user: {
         id: user.id,
         username: user.username,
         email: user.email,
+        avatar_url: user.avatar_url
       }
     });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({
       status: 'error',
-      message: 'Failed to log in',
+      message: 'auth/login_failed',
       error: error.message
     });
   }

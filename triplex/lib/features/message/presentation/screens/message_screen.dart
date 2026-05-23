@@ -1,3 +1,4 @@
+import 'package:cupertino_native_better/components/button.dart';
 import 'package:flutter/material.dart';
 
 class MessageScreen extends StatelessWidget {
@@ -5,9 +6,9 @@ class MessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Messages'),
+        child: CNButton(label: "Message",config: CNButtonConfig(style: .prominentGlass),)
       ),
     );
   }
