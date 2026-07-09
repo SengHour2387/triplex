@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:triplex/core/api/dio_provider.dart';
+
 
 part 'account_center_repo.g.dart';
 
@@ -17,13 +17,17 @@ class AccountCenterRepo {
   
   AccountCenterRepo( this._dio );
   
-  Future<void> changeUsername( String password,String newUsername ) async {
+  Future<String> changeUsername( String password,String newUsername ) async {
     try {
-      await _dio.put("profile/change-username",
-      data: {
-        newUsername: newUsername,
-        password:password}
+      final response = await _dio.put("profile/change-username",
+        data: {
+          "newUsername": newUsername,
+          "password": password,
+        },
       );
+
+      return  response.data["newUsername"].toString();
+
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       if( statusCode == 400) {
@@ -48,5 +52,24 @@ class AccountCenterRepo {
 
       throw Exception("Unknown Error");
     }
+  }
+
+  Future<bool> isUsernameAvailable( String newUsername ) async {
+    try {
+      final response = await _dio.post("profile/check-username",
+        data: {
+          "username":newUsername
+        }
+      );
+
+      if( response.data["available"] as bool == true) {
+        return true;
+      }
+
+    } catch (e) {
+      throw Exception("Unavailable");
+    }
+
+    return false;
   }
 }

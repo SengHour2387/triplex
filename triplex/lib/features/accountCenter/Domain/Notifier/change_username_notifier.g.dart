@@ -6,22 +6,51 @@ part of 'change_username_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$changeUsernameNotifierHash() =>
-    r'0c0b656361148f006c43273e1730c43bdb807f51';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [ChangeUsernameNotifier].
 @ProviderFor(ChangeUsernameNotifier)
-final changeUsernameNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<ChangeUsernameNotifier, void>.internal(
-      ChangeUsernameNotifier.new,
-      name: r'changeUsernameNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$changeUsernameNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const changeUsernameProvider = ChangeUsernameNotifierProvider._();
 
-typedef _$ChangeUsernameNotifier = AutoDisposeAsyncNotifier<void>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ChangeUsernameNotifierProvider
+    extends $AsyncNotifierProvider<ChangeUsernameNotifier, void> {
+  const ChangeUsernameNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'changeUsernameProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$changeUsernameNotifierHash();
+
+  @$internal
+  @override
+  ChangeUsernameNotifier create() => ChangeUsernameNotifier();
+}
+
+String _$changeUsernameNotifierHash() =>
+    r'43a6379b96f10d0a33e4fc0e9499838454fc7d59';
+
+abstract class _$ChangeUsernameNotifier extends $AsyncNotifier<void> {
+  FutureOr<void> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    build();
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, null);
+  }
+}

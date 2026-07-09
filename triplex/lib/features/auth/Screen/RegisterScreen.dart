@@ -27,7 +27,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(authProvider);
 
     return Scaffold(
       body: Padding(
@@ -117,7 +117,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ? null
                   : () {
                       ref
-                          .read(authNotifierProvider.notifier)
+                          .read(authProvider.notifier)
                           .register(
                             _emailController.text.trim(),
                             _usernameController.text.trim(),

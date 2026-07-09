@@ -6,21 +6,50 @@ part of 'ProfileNotifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileNotifierHash() => r'3f2f7dcde46116bef9ed03891c61eafc36aaff13';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [ProfileNotifier].
 @ProviderFor(ProfileNotifier)
-final profileNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<ProfileNotifier, UserModel?>.internal(
-      ProfileNotifier.new,
-      name: r'profileNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$profileNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const profileProvider = ProfileNotifierProvider._();
 
-typedef _$ProfileNotifier = AutoDisposeAsyncNotifier<UserModel?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ProfileNotifierProvider
+    extends $AsyncNotifierProvider<ProfileNotifier, UserModel?> {
+  const ProfileNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'profileProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$profileNotifierHash();
+
+  @$internal
+  @override
+  ProfileNotifier create() => ProfileNotifier();
+}
+
+String _$profileNotifierHash() => r'5b8e59eda4384c9bad3809dda97ba38b47a13419';
+
+abstract class _$ProfileNotifier extends $AsyncNotifier<UserModel?> {
+  FutureOr<UserModel?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<UserModel?>, UserModel?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<UserModel?>, UserModel?>,
+              AsyncValue<UserModel?>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

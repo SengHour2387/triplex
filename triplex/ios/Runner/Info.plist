@@ -2,7 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs your location to show your current position on the map and provide better navigation.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs your location to show your current position on the map and provide better navigation even when in the background.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs your location to show your current position on the map and provide better navigation.</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

@@ -45,3 +45,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Google Maps SDK for Android – mirrors the GoogleMaps pod on iOS
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+}

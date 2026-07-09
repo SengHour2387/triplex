@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,7 +16,7 @@ class ProfileNotifier extends _$ProfileNotifier {
   @override
   FutureOr<UserModel?> build() {
 
-    return ref.watch(authNotifierProvider).value;
+    return ref.watch(authProvider).value;
   }
 
   Future<void> setProfilePicture( {ImageSource? imageSource }) async {
@@ -34,7 +33,9 @@ class ProfileNotifier extends _$ProfileNotifier {
         final newUrl = await ref.watch(profileRepoProvider).setProfilePicture(
             compressImage?? file,
           uploadCallback:(current,total) {
-            ref.watch(uploadProfilePictureProgressNotifierProvider.notifier).update(((current/total)*100).toInt());
+            print(current);
+            ref.read(uploadProfilePictureProgressProvider.notifier).update(((current/total)*100).toInt());
+
           }
         );
 
@@ -46,10 +47,22 @@ class ProfileNotifier extends _$ProfileNotifier {
           id: currentState.id, username: currentState.username, email: currentState.email, avatarUrl: newUrl,
         ));
 
-        ref.read(uploadProfilePictureProgressNotifierProvider.notifier).reset();
+        ref.read(uploadProfilePictureProgressProvider.notifier).reset();
 
         }
     }
+  }
+
+  Future<void> setUsername( String username ) async {
+
+    final currentState = state.value;
+
+    if (currentState != null) {
+      state = AsyncData(UserModel(
+        id: currentState.id, username: username, email: currentState.email, avatarUrl: currentState.avatarUrl,
+      ));
+    }
+
   }
 
   Future<void> setUser( UserModel user ) async {

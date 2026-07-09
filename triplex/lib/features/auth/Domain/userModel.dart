@@ -14,4 +14,11 @@ class UserModel {
       avatarUrl: json['avatar_url'] as String?
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'username': username,
+    'email': email,
+    'avatar_url': avatarUrl,
+  };
 }

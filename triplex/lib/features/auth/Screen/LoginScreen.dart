@@ -25,7 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(authNotifierProvider, (previous, next) {
+    ref.listen(authProvider, (previous, next) {
       if (next.hasValue &&
           next.value != null &&
           Navigator.of(context).canPop()) {
@@ -33,7 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
 
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(authProvider);
 
     return Scaffold(
       body: Padding(
@@ -120,7 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ? null
                   : () {
                       ref
-                          .read(authNotifierProvider.notifier)
+                          .read(authProvider.notifier)
                           .login(
                             _emailController.text.trim(),
                             _passwordController.text,

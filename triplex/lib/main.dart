@@ -6,7 +6,5 @@ import 'app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await ProgressiveBlurWidget.precache();
-
   runApp(const ProviderScope(child: App()));
 }

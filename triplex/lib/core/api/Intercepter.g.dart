@@ -6,22 +6,47 @@ part of 'Intercepter.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authInterceptorHash() => r'c7b9bc52a6c92cdaa95021c990dd6d744db1dd04';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [authInterceptor].
 @ProviderFor(authInterceptor)
-final authInterceptorProvider = AutoDisposeProvider<AuthInterceptor>.internal(
-  authInterceptor,
-  name: r'authInterceptorProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$authInterceptorHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const authInterceptorProvider = AuthInterceptorProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthInterceptorRef = AutoDisposeProviderRef<AuthInterceptor>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class AuthInterceptorProvider
+    extends
+        $FunctionalProvider<AuthInterceptor, AuthInterceptor, AuthInterceptor>
+    with $Provider<AuthInterceptor> {
+  const AuthInterceptorProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authInterceptorProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authInterceptorHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthInterceptor> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AuthInterceptor create(Ref ref) {
+    return authInterceptor(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthInterceptor value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthInterceptor>(value),
+    );
+  }
+}
+
+String _$authInterceptorHash() => r'a0c337fd5cdca35c2ae015d9903dfc8cb3339d6d';

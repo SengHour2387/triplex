@@ -1,8 +1,9 @@
+import 'dart:convert';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:triplex/core/api/auth_logout_signal.dart';
 import 'package:triplex/core/storage/SecureStorage.dart';
 import 'package:triplex/features/auth/Domain/userModel.dart';
-import 'package:triplex/features/profile/Domain/ProfileNotifier.dart';
 
 import '../Repo/AuthRepo.dart';
 
@@ -12,9 +13,6 @@ part 'AuthNotifier.g.dart';
 class AuthNotifier extends _$AuthNotifier {
   @override
   Future<UserModel?> build() async {
-    // ── Listen to forced-logout signal from the Dio interceptor ──────────────
-    // We only act when state is NOT loading — during startup (AsyncLoading)
-    // build() handles its own error path, preventing an infinite restart loop.
     ref.listen(authLogoutSignalProvider, (_, __) {
       if (!state.isLoading) {
         state = const AsyncData(null);
@@ -22,31 +20,22 @@ class AuthNotifier extends _$AuthNotifier {
     });
 
     final storage = ref.read(secureStorageProvider.notifier);
-    final accessToken = await storage.getAccessToken();
 
-    // No token stored → not logged in.
-    if (accessToken == null || accessToken.isEmpty) return null;
-
-    try {
-      // Happy path: access token still valid.
-      // The interceptor transparently handles refresh if the token is expired,
-      // so getMe() may succeed even with an expired token after one retry.
-      return await ref.read(authRepoProvider).getMe(accessToken);
-    } catch (_) {
-      // getMe() failed even after the interceptor tried to refresh.
-      // Try one final direct refresh before giving up.
-      final refreshToken = await storage.getRefreshToken();
-      if (refreshToken == null || refreshToken.isEmpty) {
-        await storage.deleteAll();
-        return null;
-      }
+    // Read cached user from secure storage (fast, no network).
+    // No startup token validation — validate lazily on first real API call,
+    // just like Facebook. If the interceptor fails to refresh, it emits
+    // authLogoutSignal above which sets state to null.
+    final cachedUserJson = await storage.readUser();
+    if (cachedUserJson != null && cachedUserJson.isNotEmpty) {
       try {
-        return await ref.read(authRepoProvider).refreshAndSave(refreshToken);
+        return UserModel.fromJson(
+          jsonDecode(cachedUserJson) as Map<String, dynamic>,
+        );
       } catch (_) {
-        // await storage.deleteAll();
-        return null;
+        // cached user is corrupted, ignore
       }
     }
+    return null;
   }
 
   // ─── Actions ──────────────────────────────────────────────────────────────
@@ -55,7 +44,8 @@ class AuthNotifier extends _$AuthNotifier {
     state = const AsyncLoading();
     try {
       final result = await ref.read(authRepoProvider).login(email, password);
-      await ref.read(profileNotifierProvider.notifier).setUser(result);
+      final storage = ref.read(secureStorageProvider.notifier);
+      await storage.writeUser(jsonEncode(result.toJson()));
       state = AsyncValue.data(result);
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
@@ -68,7 +58,8 @@ class AuthNotifier extends _$AuthNotifier {
       final result = await ref
           .read(authRepoProvider)
           .register(email, username, password);
-      await ref.read(profileNotifierProvider.notifier).setUser(result);
+      final storage = ref.read(secureStorageProvider.notifier);
+      await storage.writeUser(jsonEncode(result.toJson()));
       state = AsyncValue.data(result);
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
@@ -77,7 +68,6 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> logout() async {
     await ref.read(secureStorageProvider.notifier).deleteAll();
-    ref.read(profileNotifierProvider.notifier).clearUser();
     state = const AsyncValue.data(null);
   }
 }

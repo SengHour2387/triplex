@@ -2,40 +2,77 @@ import 'package:flutter/material.dart';
 
 class OutlineTextField extends StatelessWidget {
   final TextInputType textInputType;
+  final TextInputAction? textInputAction;
   final TextEditingController? controller;
   final bool hide;
   final Widget? label;
+  final String? hint;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   const OutlineTextField({
     super.key,
     this.hide = false,
     this.textInputType = TextInputType.text,
+    this.textInputAction,
     this.label,
+    this.hint,
     this.controller,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final OutlineInputBorder normalBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(20),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final OutlineInputBorder enabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
       borderSide: BorderSide(
-        width: 0.5,
-        color: Theme.of(context).colorScheme.secondary,
+        width: 1,
+        color: colorScheme.outline.withAlpha(100),
+      ),
+    );
+
+    final OutlineInputBorder focusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(
+        width: 2,
+        color: colorScheme.primary,
+      ),
+    );
+
+    final OutlineInputBorder errorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(
+        width: 1,
+        color: colorScheme.error,
       ),
     );
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         obscureText: hide,
         controller: controller,
+        textInputAction: textInputAction,
         keyboardType: textInputType,
+        readOnly: readOnly,
+        onTap: onTap,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           label: label,
-          enabledBorder: normalBorder,
-          focusedBorder: normalBorder,
-          border: normalBorder,
+          hintText: hint,
+          hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withAlpha(150)),
+          filled: true,
+          fillColor: colorScheme.surfaceContainerHighest.withAlpha(50),
+          enabledBorder: enabledBorder,
+          focusedBorder: focusedBorder,
+          errorBorder: errorBorder,
+          focusedErrorBorder: errorBorder.copyWith(
+            borderSide: BorderSide(width: 2, color: colorScheme.error),
+          ),
         ),
       ),
     );

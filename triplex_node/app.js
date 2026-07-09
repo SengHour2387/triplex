@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import pool from './db.js';
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
+import mapRoutes from './routes/map.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/map', mapRoutes);
 
 
 // Health check route
@@ -46,5 +48,5 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log('Server running...');
+  console.log(`\u001b[32mServer running on port ${process.env.PORT}\u001b[0m`);
 });

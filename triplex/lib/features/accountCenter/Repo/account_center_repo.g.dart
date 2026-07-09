@@ -6,23 +6,52 @@ part of 'account_center_repo.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$accountCenterRepoHash() => r'026062a5bb1bc5da31d0e7ee83bb5da465079586';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [accountCenterRepo].
 @ProviderFor(accountCenterRepo)
-final accountCenterRepoProvider =
-    AutoDisposeProvider<AccountCenterRepo>.internal(
-      accountCenterRepo,
-      name: r'accountCenterRepoProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$accountCenterRepoHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const accountCenterRepoProvider = AccountCenterRepoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AccountCenterRepoRef = AutoDisposeProviderRef<AccountCenterRepo>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class AccountCenterRepoProvider
+    extends
+        $FunctionalProvider<
+          AccountCenterRepo,
+          AccountCenterRepo,
+          AccountCenterRepo
+        >
+    with $Provider<AccountCenterRepo> {
+  const AccountCenterRepoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'accountCenterRepoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$accountCenterRepoHash();
+
+  @$internal
+  @override
+  $ProviderElement<AccountCenterRepo> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AccountCenterRepo create(Ref ref) {
+    return accountCenterRepo(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AccountCenterRepo value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AccountCenterRepo>(value),
+    );
+  }
+}
+
+String _$accountCenterRepoHash() => r'026062a5bb1bc5da31d0e7ee83bb5da465079586';

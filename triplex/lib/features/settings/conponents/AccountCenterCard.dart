@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:triplex/core/widgets/TextH.dart';
+import 'package:triplex/features/profile/Domain/ProfileNotifier.dart';
 
 class AccountCenterCard extends ConsumerStatefulWidget {
   const AccountCenterCard({super.key});
@@ -21,6 +22,9 @@ class _AccountCenterCardState extends ConsumerState<AccountCenterCard> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = ref.watch(profileProvider).value;
+
     Size screenSize = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -40,21 +44,25 @@ class _AccountCenterCardState extends ConsumerState<AccountCenterCard> {
               mainAxisSize: .max,
               mainAxisAlignment: .spaceBetween,
               children: [
-                TextH2("Account Center"),
+                const Hero(
+                tag: "account_center_title"
+                ,child: Material(
+                    type: .transparency,
+                    child: TextH2("Account Center", maxLines: 1))),
                 Platform.isIOS ?
                 RepaintBoundary(
                   child: Transform.scale(
                     scale: 0.8,
                     child: CNButton.icon(
-                      icon: CNSymbol("chevron.right",mode: .hierarchical,),
+                      icon: const CNSymbol("chevron.right",mode: .hierarchical,),
                       config: CNButtonConfig(
-                          style: .tinted
+                          style: .glass
                       ),
                       onPressed: _goToAccountCenter,
                     ),
                   ),
                 ):
-                IconButton(onPressed: _goToAccountCenter, icon: Icon(Icons.arrow_forward_ios_rounded)),
+                IconButton(onPressed: _goToAccountCenter, icon: const Icon(Icons.arrow_forward_ios_rounded)),
               ],),
             Row(children: [
               Expanded(flex:1,child: TextH4("Name")),
@@ -62,12 +70,12 @@ class _AccountCenterCardState extends ConsumerState<AccountCenterCard> {
             ],),
             Row(children: [
               Expanded(flex:1,child: TextH6("Username")),
-              Expanded(flex:3,child: TextH6("mr_vannda"))
+              Expanded(flex:3,child: TextH6(user?.username??""))
             ],),
             Row(children: [
               Expanded(flex:1,child: TextH6("Email")),
-              Expanded(flex:2,child: TextH6("mrvannda@gmail.com")),
-              Expanded(flex:1,child: TextH6("Not verified",fontSize: 12,color: Theme.of(context).colorScheme.error,))
+              Expanded(flex:3,child: TextH6(user?.email??"")),
+              TextH6("Not verified",textAlign: .end,fontSize: 12,color: Theme.of(context).colorScheme.error,)
             ],),
           ],
         ),

@@ -18,7 +18,7 @@ import '../navigation/main_shell.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   // Listen to auth state changes and refresh the router
   final authNotifier = ValueNotifier<bool>(false);
-  ref.listen(authNotifierProvider, (_, __) {
+  ref.listen(authProvider, (_, __) {
     authNotifier.value = !authNotifier.value;
   });
 
@@ -28,11 +28,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     observers: [CNTransitionObserver()],
     refreshListenable: authNotifier,
     redirect: (context, state) {
-      final authState = ref.read(authNotifierProvider);
+      final authState = ref.read(authProvider);
       final isLoading = authState.isLoading;
       if (isLoading) return null;
 
-      final isLoggedIn = authState.valueOrNull != null;
+      final isLoggedIn = authState.value != null;
       final isOnAuthPage =
           state.matchedLocation == '/login' ||
           state.matchedLocation == '/register';

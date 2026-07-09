@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:triplex/core/storage/SecureStorage.dart';
 
@@ -12,9 +11,9 @@ part 'Intercepter.g.dart';
 
 @riverpod
 AuthInterceptor authInterceptor(Ref ref) {
-  // final String host = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+  // final String host = "http://${Platform.isAndroid ? '10.0.2.2:3000' : 'localhost:3000'}";
   // final String host = '172.20.53.35';
-  final String host = "https://triplex-node.onrender.com";
+  final String host = "https://triplex-node-1byl.onrender.com";
 
   return AuthInterceptor(
     ref,
@@ -67,7 +66,7 @@ class AuthInterceptor extends Interceptor {
   // ─── Attach token to every request ────────────────────────────────────────
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -81,7 +80,7 @@ class AuthInterceptor extends Interceptor {
   // ─── Handle 401 / 403 with mutex refresh ──────────────────────────────────
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     final isUnauthorized =
         err.response?.statusCode == 401 || err.response?.statusCode == 403;
     final isRefreshEndpoint = err.requestOptions.path.contains('auth/refresh');
@@ -92,7 +91,7 @@ class AuthInterceptor extends Interceptor {
     }
 
     // ── Another request is already refreshing — queue behind it ──────────────
-    if (_isRefreshing) {
+    if (_isRefreshing && _refreshCompleter != null) {
       final newToken = await _refreshCompleter!.future;
       if (newToken != null) {
         try {
@@ -136,30 +135,34 @@ class AuthInterceptor extends Interceptor {
       // Unblock waiting requests.
       _completeRefresh(newAccessToken);
     } catch (e) {
-  _completeRefresh(null);
+      _completeRefresh(null);
 
-  // Only wipe tokens if it's an actual auth failure,
-  // not a connectivity issue.
-  final isNetworkError = e is DioException &&
-  e.type == DioExceptionType.connectionError ||
-  e is SocketException;
+      // Only wipe tokens if it's an actual auth failure,
+      // not a connectivity issue.
+      final isNetworkError = e is DioException &&
+          (e.type == DioExceptionType.connectionError ||
+              e.type == DioExceptionType.connectionTimeout) ||
+          e is SocketException;
 
-  if (!isNetworkError) {
-  await _storage.deleteAll();
-  _ref.read(authLogoutSignalProvider.notifier).trigger();
-  }
+      if (!isNetworkError) {
+        await _storage.deleteAll();
+        _ref.read(authLogoutSignalProvider.notifier).trigger();
+      }
 
-  return handler.reject(err);
-  } finally {
+      return handler.reject(err);
+    } finally {
       _isRefreshing = false;
-      _refreshCompleter = null;
+      // We don't nullify _refreshCompleter here immediately to avoid 
+      // late-arriving requests missing the future while we are still cleaning up.
+      // But we must eventually.
     }
 
+    // Retry the original failing request with the new token.
     try {
       final retried = await _retryRequest(err.requestOptions, newAccessToken);
       return handler.resolve(retried);
     } on DioException catch (e) {
       return handler.reject(e);
     }
-  }
+    }
 }

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:triplex/core/api/dio_provider.dart';
 import 'package:triplex/core/storage/SecureStorage.dart';
 import 'package:triplex/features/auth/Domain/userModel.dart';
@@ -34,7 +33,7 @@ class AuthRepo {
       if (accessToken != null) await _storage.writeAccessToken(accessToken);
       if (refreshToken != null) await _storage.writeRefreshToken(refreshToken);
 
-      return UserModel.fromJson(response.data['user']);
+      return UserModel.fromJson(response.data['user'] as Map<String,dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400 || e.response?.statusCode == 401) {
         throw Exception('Invalid email or password');
@@ -63,7 +62,7 @@ class AuthRepo {
       if (accessToken != null) await _storage.writeAccessToken(accessToken);
       if (refreshToken != null) await _storage.writeRefreshToken(refreshToken);
 
-      return UserModel.fromJson(response.data['user']);
+      return UserModel.fromJson(response.data['user'] as Map<String,dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         if(e.response?.data["message"] == "auth/register_missing_fields") {
@@ -86,7 +85,7 @@ class AuthRepo {
   Future<UserModel?> getMe( String token) async {
     try {
       final response = await _dio.get("profile/me");
-      return UserModel.fromJson(response.data['user']);
+      return UserModel.fromJson(response.data['user'] as Map<String,dynamic> );
     } on DioException catch (e) {
       if (e.response?.statusCode == 400 || e.response?.statusCode == 401 || e.response?.statusCode == 403) {
         throw Exception('Invalid token');
@@ -104,7 +103,7 @@ class AuthRepo {
           "auth/refresh",
         data: { "refreshToken":token}
       );
-      return UserModel.fromJson(response.data['user']);
+      return UserModel.fromJson(response.data['user'] as Map<String,dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400 || e.response?.statusCode == 401 || e.response?.statusCode == 403) {
         throw Exception('Invalid token');
@@ -132,7 +131,7 @@ class AuthRepo {
       await _storage.writeAccessToken(newAccessToken);
       if (newRefreshToken != null) await _storage.writeRefreshToken(newRefreshToken);
 
-      return UserModel.fromJson(response.data['user']);
+      return UserModel.fromJson(response.data['user'] as Map<String,dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400 ||
           e.response?.statusCode == 401 ||

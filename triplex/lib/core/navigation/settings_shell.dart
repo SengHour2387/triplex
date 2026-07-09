@@ -1,12 +1,9 @@
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:cupertino_native_better/components/button.dart';
-import 'package:cupertino_native_better/components/floating_island.dart';
 import 'package:cupertino_native_better/cupertino_native.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:triplex/core/widgets/AdptiveTopBlur.dart';
 
 class SettingsShell extends StatelessWidget {
   final Widget subPage;
@@ -27,10 +24,7 @@ class SettingsShell extends StatelessWidget {
             Transform.scale(
               scale: 0.8,
               child: CNButton.icon(
-                icon: CNSymbol("chevron.left",mode: .multicolor,),
-                config: CNButtonConfig(
-                  style: .glass
-                ),
+                icon: const CNSymbol("chevron.left",mode: .multicolor,),
                 onPressed: () {
                   context.pop();
                 },
@@ -38,9 +32,9 @@ class SettingsShell extends StatelessWidget {
             ):
             IconButton(onPressed: () {
               context.pop();
-            }, icon: Icon(Icons.arrow_back_ios_new_rounded)),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 2),
+            }, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 2),
           child: Text("Settings")
         ).liquidGlass(interactive: true),centerTitle: true,
       ),
@@ -58,9 +52,9 @@ class SettingsShell extends StatelessWidget {
             blendMode: BlendMode.dstIn,
             child: subPage,   // ← Your ListView
           ),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 2,sigmaY: 2),child: SizedBox(height: AppBar().preferredSize.height,width: screenSize.width,),)),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 1,sigmaY: 1),child: SizedBox(height: AppBar().preferredSize.height + kToolbarHeight-10,width: screenSize.width,),)),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: .5,sigmaY: .5),child: SizedBox(height: AppBar().preferredSize.height + kToolbarHeight,width: screenSize.width,),)),
+
+          const AdaptiveTopBlur()
+
         ],
       )
     );

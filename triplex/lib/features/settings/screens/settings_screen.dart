@@ -1,6 +1,5 @@
-import 'dart:ui';
 
-import 'package:cupertino_native_better/components/popup_menu_button.dart';
+import 'package:cupertino_native_better/cupertino_native.dart';
 import 'package:flutter/material.dart';
 import 'package:triplex/features/settings/conponents/AccountCenterCard.dart';
 
@@ -21,10 +20,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
+            spacing: 10,
             children: [
               ListTile(
-                style: .list,
+                style: ListTileStyle.list,
                 title: Text("Theme mode"),
                 trailing:
                 CNPopupMenuButton(
@@ -34,12 +34,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onSelected: (i){}),
                 tileColor: Theme.of(context).colorScheme.surfaceBright,
                 shape: RoundedRectangleBorder(
-                  borderRadius: .circular(24)
+                  borderRadius: BorderRadius.circular(24)
                 ),
-              )
+              ),
+              CNButton(
+                  onPressed: () {},
+                  icon: CNSymbol("iphone.and.arrow.forward.outward",size: 14),
+                  config: CNButtonConfig(style: .prominentGlass,shrinkWrap: true,labelFontSize: 16,imagePadding: 5),
+                  label: "Log out")
             ],
           ),
-        )
+        ),
       ],
     );
   }
