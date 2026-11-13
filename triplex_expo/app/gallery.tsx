@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Appearance, Platform, StyleSheet, View } from 'react-native';
 
 import {
+  ExpandReveal,
   Glass,
   GlassButton,
   GlassRow,
@@ -54,6 +55,7 @@ function GalleryScreen() {
   const [filled, setFilled] = useState('alice');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('hello');
+  const [revealOpen, setRevealOpen] = useState(false);
   const [pick, setPick] = useState<'light' | 'dark' | 'system'>('system');
 
   return (
@@ -208,6 +210,21 @@ function GalleryScreen() {
             })
           }
         />
+      </Section>
+
+      <Section title="Expand reveal (fade + grow from top)">
+        <GlassButton
+          label={revealOpen ? 'Hide replies' : 'View 3 replies'}
+          variant="glass"
+          onPress={() => setRevealOpen((v) => !v)}
+        />
+        <ExpandReveal open={revealOpen}>
+          <View style={{ gap: 8, paddingTop: 8 }}>
+            {['Agreed!', 'Same here', 'Where was this?'].map((t) => (
+              <Text key={t} variant="body">{t}</Text>
+            ))}
+          </View>
+        </ExpandReveal>
       </Section>
 
       <View style={{ height: 40 }} />

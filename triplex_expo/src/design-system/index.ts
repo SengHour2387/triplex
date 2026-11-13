@@ -16,6 +16,8 @@ export { ICONS, type IconName, type IconProps } from './icons';
 export { Screen, useScrollInsets, type ScreenProps } from './Screen';
 export { OptionPicker } from './OptionPicker';
 export type { OptionPickerOption, OptionPickerProps } from './optionPickerTypes';
+export { ExpandReveal, type ExpandRevealProps } from './ExpandReveal';
+export { TopScrollEdge, type TopScrollEdgeProps } from './TopScrollEdge';
 export { ProgressiveBlur, type ProgressiveBlurProps } from './ProgressiveBlur';
 export { resolveSheetBackground, sheetOptions, type SheetOptionsInput } from './sheet';
 export { useSheetOptions } from './useSheetOptions';

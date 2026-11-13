@@ -33,10 +33,11 @@ export interface ProgressiveBlurProps {
  *
  * Place it as a sibling *after* the scroll view, inside a flex container. It never takes touches.
  *
- * Why not the native effect: UIKit's scroll-edge effect needs a navigation bar / toolbar to anchor
- * to. Tried via `scrollEdgeEffects: { top: 'soft' }` on a header-less screen on iOS 26.5 — no
- * visible effect. So this is drawn: a masked system blur (iOS 26 and older), and a plain
- * background-colour fade where there is no blur (Reduce Transparency; Android until its pass).
+ * On iOS 26+ prefer `TopScrollEdge`, which applies the *native* soft scroll-edge effect (via
+ * react-native-screens' `ScrollViewMarker`). The plain `scrollEdgeEffects` screen option did nothing
+ * on a header-less screen; the marker is what makes the system attach it to the scroll view. This
+ * drawn version is `TopScrollEdge`'s fallback for iOS < 26 and Android: a masked system blur (iOS
+ * 26 and older), and a plain background-colour fade where there is no blur (Reduce Transparency).
  */
 export function ProgressiveBlur({ fadeHeight = 28 }: ProgressiveBlurProps) {
   const insets = useSafeAreaInsets();

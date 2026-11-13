@@ -1,6 +1,6 @@
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { ProgressiveBlur, Spinner, spacing, Text, useExpandTabBarOnScrollUp, useFontScale, useScrollInsets, useTheme } from '../../../design-system';
+import { Spinner, spacing, Text, TopScrollEdge, useExpandTabBarOnScrollUp, useFontScale, useScrollInsets, useTheme } from '../../../design-system';
 import { useFeed } from '../hooks/useFeed';
 import type { Post } from '../model/post';
 import { FeedMessage } from './FeedMessage';
@@ -57,7 +57,7 @@ export function FeedScreen() {
     );
 
   return (
-    <>
+    <TopScrollEdge>
       <FlatList
         testID="feed-list"
         data={feed.posts}
@@ -77,9 +77,7 @@ export function FeedScreen() {
         style={{ backgroundColor: colors.background }}
         contentContainerStyle={[feed.posts.length === 0 && styles.grow, { paddingTop: inset.top, paddingBottom: spacing.xl + inset.bottom }]}
       />
-      {/* Posts scroll under the status bar: blur it so the clock stays legible. */}
-      <ProgressiveBlur />
-    </>
+    </TopScrollEdge>
   );
 }
 

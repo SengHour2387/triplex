@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Spinner, spacing, Text, useTheme } from '../../../design-system';
+import { ExpandReveal, Spinner, spacing, Text, useTheme } from '../../../design-system';
 import type { Comment } from '../model/comment';
 import { useReplies } from '../hooks/useComments';
 import { CommentRow } from './CommentRow';
@@ -40,7 +40,7 @@ export function CommentThread({ comment, currentUserId, open, onToggle, onReply 
         </Pressable>
       ) : null}
 
-      {open ? (
+      <ExpandReveal open={open}>
         <View>
           {(replies ?? []).map((reply) => (
             <CommentRow key={reply.id} comment={reply} isReply mine={isMine(reply)} onReply={onReply} />
@@ -55,7 +55,7 @@ export function CommentThread({ comment, currentUserId, open, onToggle, onReply 
             </Pressable>
           ) : null}
         </View>
-      ) : null}
+      </ExpandReveal>
     </View>
   );
 }

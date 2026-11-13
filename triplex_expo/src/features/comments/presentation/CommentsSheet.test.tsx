@@ -124,7 +124,8 @@ describe('CommentsSheet — what it shows', () => {
     expect(screen.getByText('Me too')).toBeTruthy();
     expect(api.replies).toHaveBeenCalledWith('a');
     await fireEvent.press(screen.getByRole('button', { name: 'Hide replies' }));
-    expect(screen.queryByText('Agreed')).toBeNull();
+    // The close animation plays first, then the replies are removed.
+    await waitFor(() => expect(screen.queryByText('Agreed')).toBeNull());
   });
 
   it('shows a deleted comment as "This comment was deleted." with no author and no actions', async () => {
