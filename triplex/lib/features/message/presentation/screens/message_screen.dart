@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MessageScreen extends StatelessWidget {
@@ -7,28 +6,28 @@ class MessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        forceMaterialTransparency: true,
-        title: Text("Messages"),
-      ),
-      body: Stack(
-        children: [
-          ListView(
-            children: [
-              Center(
-                child: ElevatedButton(onPressed: () {}, child: const Text("HIII")
-                )
-            )
-            ],
+      body: CustomScrollView(
+        slivers: [
+          const CupertinoSliverNavigationBar(
+            largeTitle: Text("Messages"),
+            border: null,
           ),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 2,sigmaY: 2),child: SizedBox(height: AppBar().preferredSize.height,width: screenSize.width,),)),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 1,sigmaY: 1),child: SizedBox(height: AppBar().preferredSize.height + kToolbarHeight-10,width: screenSize.width,),)),
-          ClipRect(child: BackdropFilter(filter: ImageFilter.blur(sigmaX: .5,sigmaY: .5),child: SizedBox(height: AppBar().preferredSize.height + kToolbarHeight,width: screenSize.width,),)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => ListTile(
+                leading:
+                    const Icon(CupertinoIcons.person_circle_fill, size: 40),
+                title: Text("Student ${index + 1}",
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: const Text("Tap to view messages"),
+                trailing: const Icon(CupertinoIcons.chevron_right,
+                    size: 14, color: CupertinoColors.systemGrey),
+              ),
+              childCount: 4,
+            ),
+          ),
         ],
       ),
     );

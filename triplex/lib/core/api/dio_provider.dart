@@ -1,19 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:triplex/core/api/Intercepter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:triplex/core/api/auth_interceptor.dart';
+import 'package:triplex/core/api/cache_interceptor_provider.dart';
+import 'package:triplex/core/config/app_config.dart';
 
 part 'dio_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Dio dio(Ref ref) {
-  // final String host = "http://${Platform.isAndroid ? '10.0.2.2:3000' : 'localhost:3000'}";
-
-  // final String host = '172.20.53.35';
-  final String host = "https://triplex-node-1byl.onrender.com";
-
   final dio = Dio(
     BaseOptions(
-      baseUrl: '$host/api/',
+      baseUrl: AppConfig.baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 15),
       sendTimeout: const Duration(seconds: 10),
@@ -21,5 +18,6 @@ Dio dio(Ref ref) {
     ),
   );
   dio.interceptors.add(ref.watch(authInterceptorProvider));
+  dio.interceptors.add(ref.watch(dioCacheInterceptorProvider));
   return dio;
 }

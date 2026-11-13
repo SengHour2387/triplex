@@ -72,6 +72,7 @@ class GoogleMapPlatformView(
     private val mapView: MapView = MapView(context)
     private var googleMap: GoogleMap? = null
     private var marker: Marker? = null
+    private val existingMarkers = mutableListOf<Marker>()
 
     private val channel = MethodChannel(messenger, "AndroidGoogleMap_$viewId")
 
@@ -142,6 +143,15 @@ class GoogleMapPlatformView(
                     clearMarker()
                     result.success(null)
                 }
+                "setExistingMarkers" -> {
+                    val markers = call.arguments as? List<*>
+                    if (markers != null) {
+                        setExistingMarkers(markers)
+                        result.success(null)
+                    } else {
+                        result.error("INVALID_ARGS", "Expected list of {latitude, longitude, title?}", null)
+                    }
+                }
                 "enableMyLocation" -> {
                     googleMap?.let { applyMyLocation(it) }
                     result.success(null)
@@ -189,6 +199,29 @@ class GoogleMapPlatformView(
     private fun clearMarker() {
         marker?.remove()
         marker = null
+    }
+
+    private fun setExistingMarkers(markers: List<*>) {
+        clearExistingMarkers()
+        for (item in markers) {
+            val map = item as? Map<*, *> ?: continue
+            val lat = map["latitude"] as? Double ?: continue
+            val lng = map["longitude"] as? Double ?: continue
+            val title = map["title"] as? String
+            val m = googleMap?.addMarker(
+                MarkerOptions()
+                    .position(LatLng(lat, lng))
+                    .title(title)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                    .alpha(0.7f)
+            )
+            if (m != null) existingMarkers.add(m)
+        }
+    }
+
+    private fun clearExistingMarkers() {
+        for (m in existingMarkers) m.remove()
+        existingMarkers.clear()
     }
 
     /** Safely enables the My Location layer only when permission is granted. */

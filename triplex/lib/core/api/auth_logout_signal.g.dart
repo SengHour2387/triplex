@@ -21,15 +21,15 @@ final class AuthLogoutSignalProvider
   /// A simple counter signal. When it increments, AuthNotifier knows to force logout.
   /// This decouples the Dio interceptor from AuthNotifier to avoid circular dependencies.
   const AuthLogoutSignalProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authLogoutSignalProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'authLogoutSignalProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$authLogoutSignalHash();
@@ -59,14 +59,8 @@ abstract class _$AuthLogoutSignal extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

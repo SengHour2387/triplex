@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticate, optionalAuthenticate } from '../middleware/auth.js';
 import {
   getUserProfile,
   updateUserProfile,
@@ -11,11 +11,12 @@ import {
 
 const router = express.Router();
 
-router.get('/profile/:userId', getUserProfile);
-router.put('/profile', authenticateToken, updateUserProfile);
-router.post('/follow/:userId', authenticateToken, followUser);
-router.delete('/unfollow/:userId', authenticateToken, unfollowUser);
-router.get('/:userId/followers', getFollowers);
-router.get('/:userId/following', getFollowing);
+router.get('/profile/:userId', optionalAuthenticate, getUserProfile);
+router.put('/profile', authenticate, updateUserProfile);
+router.post('/follow/:userId', authenticate, followUser);
+router.delete('/unfollow/:userId', authenticate, unfollowUser);
+router.get('/:userId/followers', optionalAuthenticate, getFollowers);
+router.get('/:userId/following', optionalAuthenticate, getFollowing);
 
 export default router;
+

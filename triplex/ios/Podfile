@@ -1,8 +1,13 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '15.0'
+platform :ios, '17.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+# sqlite3_flutter_libs runs SQLite's host configure script while CocoaPods is
+# installing pods. With Xcode 26, the script otherwise picks the standalone
+# Command Line Tools SDK instead of Xcode's selected SDK and fails its probes.
+ENV['SDKROOT'] = `xcrun --sdk macosx --show-sdk-path`.strip
 
 project 'Runner', {
   'Debug' => :debug,
@@ -41,6 +46,7 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
     
     target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
         'PERMISSION_LOCATION=1',

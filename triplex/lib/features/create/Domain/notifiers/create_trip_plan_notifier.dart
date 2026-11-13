@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:triplex/features/create/Domain/stop_item_model.dart';
-import 'package:triplex/features/create/Domain/trip_plan_model.dart';
-import 'package:triplex/features/create/Domain/notifiers/goal_notifier.dart';
-import 'package:triplex/features/create/Domain/notifiers/way_point_notifier.dart';
+import 'package:triplex/core/media_optimizer/post_image_optimizer.dart';
+import 'package:triplex/features/create/data/trip_plan_repo.dart';
+import 'package:triplex/features/create/domain/notifiers/create_media_notifier.dart';
+import 'package:triplex/features/create/domain/notifiers/goal_notifier.dart';
+import 'package:triplex/features/create/domain/notifiers/way_point_notifier.dart';
+import 'package:triplex/features/create/domain/stop_item_model.dart';
+import 'package:triplex/features/create/domain/trip_plan_model.dart';
+import 'package:triplex/features/profile/domain/draft_trip_plans_notifier.dart';
 
 part 'create_trip_plan_notifier.g.dart';
 
@@ -14,19 +21,24 @@ class CreateTripPlanNotifier extends _$CreateTripPlanNotifier {
       title: "",
       caption: "",
       waypoints: [],
-      end: StopItemModel(title: '', role: .end),
+      end: StopItemModel(title: '', role: StopType.end),
     );
   }
 
   void setStart(StopItemModel start) {
-    state = state.copyWith(start: start.copyWith(role: .start));
+    state = state.copyWith(start: start.copyWith(role: StopType.start));
   }
 
   void setGoal() {
     if (ref.read(goalProvider).title.isEmpty) {
       throw Exception("Please give your destination a name");
     }
-    state = state.copyWith(end: ref.read(goalProvider).copyWith(role: .end));
+    state = state.copyWith(
+        end: ref.read(goalProvider).copyWith(role: StopType.end));
+  }
+
+  void clearGoal() {
+    state = state.copyWith(end: StopItemModel(title: '', role: StopType.end));
   }
 
   void onTitleChange(String title) {
@@ -65,9 +77,110 @@ class CreateTripPlanNotifier extends _$CreateTripPlanNotifier {
     state = TripPlanModel(
       title: "",
       caption: "",
-      start: null,
       waypoints: [],
-      end: StopItemModel(title: ''),
+      end: StopItemModel(title: '', role: StopType.end),
     );
+  }
+
+  Future<void> saveTripPlan(
+      {required String title, required String caption}) async {
+    if (title.trim().isEmpty) {
+      throw Exception("Please give your trip a title");
+    }
+    if (state.end == null || state.end!.title.isEmpty) {
+      throw Exception("Please set your goal/destination stop");
+    }
+
+    final fullTripPlan = state.copyWith(
+      title: title.trim(),
+      caption: caption.trim().isEmpty ? null : caption.trim(),
+    );
+
+    final repo = ref.read(tripPlanRepoProvider);
+    await repo.saveTripPlan(fullTripPlan);
+    await ref.read(draftTripPlansProvider.notifier).addDraft(fullTripPlan);
+    reset();
+  }
+
+  Future<void> postTripPlan(
+      {required String title, required String caption}) async {
+    if (title.trim().isEmpty) {
+      throw Exception("Please give your trip a title");
+    }
+    if (state.end == null || state.end!.title.isEmpty) {
+      throw Exception("Please set your goal/destination stop");
+    }
+
+    final fullTripPlan = state.copyWith(
+      title: title.trim(),
+      caption: caption.trim().isEmpty ? null : caption.trim(),
+    );
+
+    final repo = ref.read(tripPlanRepoProvider);
+    await repo.postTripPlan(fullTripPlan, caption.trim());
+    reset();
+  }
+
+  Future<void> createFullPost({
+    required String title,
+    required String caption,
+    required List<XFile> mediaFiles,
+    required bool includeTripPlan,
+  }) async {
+    final hasPlan = includeTripPlan &&
+        title.trim().isNotEmpty &&
+        (state.end != null && state.end!.title.isNotEmpty);
+    final hasMedia = mediaFiles.isNotEmpty;
+
+    if (!hasPlan && !hasMedia) {
+      if (title.trim().isEmpty &&
+          (state.end == null || state.end!.title.isEmpty)) {
+        throw Exception(
+            "Please enter trip plan details or select media to post.");
+      }
+      if (state.end == null || state.end!.title.isEmpty) {
+        throw Exception(
+            "Please set your destination goal stop for the trip plan.");
+      }
+    }
+
+    String type;
+    TripPlanModel? fullTripPlan;
+
+    if (hasPlan && hasMedia) {
+      type = 'trip_plan_media';
+      fullTripPlan = state.copyWith(
+        title: title.trim(),
+        caption: caption.trim().isEmpty ? null : caption.trim(),
+      );
+    } else if (hasPlan) {
+      type = 'trip_plan';
+      fullTripPlan = state.copyWith(
+        title: title.trim(),
+        caption: caption.trim().isEmpty ? null : caption.trim(),
+      );
+    } else {
+      type = 'media';
+      fullTripPlan = null;
+    }
+
+    // Optimize media files before uploading
+    final List<XFile> optimizedFiles = [];
+    for (final file in mediaFiles) {
+      final optimized =
+          await PostImageOptimizer.optimizeForPost(File(file.path));
+      optimizedFiles.add(optimized != null ? XFile(optimized.path) : file);
+    }
+
+    final repo = ref.read(tripPlanRepoProvider);
+    await repo.createPost(
+      type: type,
+      caption: caption.trim(),
+      tripPlan: fullTripPlan,
+      mediaFiles: optimizedFiles,
+    );
+
+    reset();
+    ref.read(createMediaProvider.notifier).reset();
   }
 }

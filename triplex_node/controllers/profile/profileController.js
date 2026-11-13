@@ -7,7 +7,7 @@ export async function getProfile(req, res) {
     console.log('Fetching profile for user ID:', userId);
 
     const result = await pool.query(
-      'SELECT id, username, email, avatar_url FROM users WHERE id = $1',
+      'SELECT id, username, email, name, phone, avatar_url FROM users WHERE id = $1',
       [userId]
     );
 
@@ -27,6 +27,8 @@ export async function getProfile(req, res) {
         id: user.id,
         username: user.username,
         email: user.email,
+        name: user.name,
+        phone: user.phone,
         avatar_url: user.avatar_url
       }
     });

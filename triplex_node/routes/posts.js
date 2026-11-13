@@ -1,7 +1,9 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import multer from 'multer';
+import { authenticate, optionalAuthenticate } from '../middleware/auth.js';
 import {
   createPost,
+  repostPost,
   getPost,
   getUserPosts,
   getFeed,
@@ -10,12 +12,14 @@ import {
 } from '../controllers/postController.js';
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
-router.post('/', authenticateToken, createPost);
-router.get('/feed', authenticateToken, getFeed);
-router.get('/:postId', getPost);
-router.get('/user/:userId', getUserPosts);
-router.put('/:postId', authenticateToken, updatePost);
-router.delete('/:postId', authenticateToken, deletePost);
+router.post('/', authenticate, upload.array('media', 10), createPost);
+router.post('/:postId/repost', authenticate, repostPost);
+router.get('/feed', optionalAuthenticate, getFeed);
+router.get('/:postId', optionalAuthenticate, getPost);
+router.get('/user/:userId', optionalAuthenticate, getUserPosts);
+router.put('/:postId', authenticate, updatePost);
+router.delete('/:postId', authenticate, deletePost);
 
 export default router;

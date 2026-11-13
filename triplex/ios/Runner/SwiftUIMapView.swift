@@ -129,6 +129,7 @@ class SwiftUIMapView: UIView, @preconcurrency FlutterPlatformView, @preconcurren
     private let mapView: GMSMapView
     private let channel: FlutterMethodChannel
     private var marker: GMSMarker?
+    private var existingMarkers: [GMSMarker] = []
     private let topBlurView: UIVisualEffectView
     private let bottomBlurView: UIVisualEffectView
 
@@ -234,6 +235,15 @@ class SwiftUIMapView: UIView, @preconcurrency FlutterPlatformView, @preconcurren
             case "clearMarker":
                 self?.clearMarker()
                 result(nil)
+            case "setExistingMarkers":
+                if let markerList = call.arguments as? [[String: Any]] {
+                    self?.setExistingMarkers(markerList)
+                    result(nil)
+                } else {
+                    result(FlutterError(code: "INVALID_ARGS",
+                                        message: "Expected list of {latitude, longitude, title?}",
+                                        details: nil))
+                }
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -300,6 +310,27 @@ class SwiftUIMapView: UIView, @preconcurrency FlutterPlatformView, @preconcurren
     func clearMarker() {
         marker?.map = nil
         marker = nil
+    }
+
+    func setExistingMarkers(_ markers: [[String: Any]]) {
+        clearExistingMarkers()
+        for item in markers {
+            guard let lat = item["latitude"] as? Double,
+                  let lng = item["longitude"] as? Double else { continue }
+            let m = GMSMarker(position: CLLocationCoordinate2D(latitude: lat, longitude: lng))
+            m.title = item["title"] as? String
+            m.icon = GMSMarker.markerImage(with: .purple)
+            m.opacity = 0.7
+            m.map = mapView
+            existingMarkers.append(m)
+        }
+    }
+
+    func clearExistingMarkers() {
+        for m in existingMarkers {
+            m.map = nil
+        }
+        existingMarkers.removeAll()
     }
 
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {

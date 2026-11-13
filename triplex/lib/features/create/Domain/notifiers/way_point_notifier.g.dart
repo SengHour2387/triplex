@@ -15,15 +15,15 @@ const wayPointProvider = WayPointNotifierProvider._();
 final class WayPointNotifierProvider
     extends $NotifierProvider<WayPointNotifier, StopItemModel> {
   const WayPointNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'wayPointProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'wayPointProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$wayPointNotifierHash();
@@ -41,7 +41,7 @@ final class WayPointNotifierProvider
   }
 }
 
-String _$wayPointNotifierHash() => r'744d9ef0ce73080848a6699d390b3b09ffb40233';
+String _$wayPointNotifierHash() => r'4d622606751e347a310f6578dc70ab0a58ccc0e8';
 
 abstract class _$WayPointNotifier extends $Notifier<StopItemModel> {
   StopItemModel build();
@@ -50,14 +50,11 @@ abstract class _$WayPointNotifier extends $Notifier<StopItemModel> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<StopItemModel, StopItemModel>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<StopItemModel, StopItemModel>,
-              StopItemModel,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<StopItemModel, StopItemModel>,
+        StopItemModel,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

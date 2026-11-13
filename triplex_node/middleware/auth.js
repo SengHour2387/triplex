@@ -27,3 +27,26 @@ export async function authenticate(req, res, next) {
     });
   }
 }
+
+export async function optionalAuthenticate(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    const decoded = verifyAccessToken(token);
+    req.user = {
+      id: decoded.userId,
+      version: decoded.version
+    };
+  } catch (error) {
+    req.user = null;
+  }
+  next();
+}
+
+export const authenticateToken = authenticate;
