@@ -1,16 +1,17 @@
 import 'package:currency_picker_plus/currency_picker_plus.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:triplex/features/create/Domain/stop_item_model.dart';
-import 'package:triplex/features/map/Domain/POI_place.dart';
-import 'package:triplex/features/map/Repo/google_maps_repo.dart';
+import 'package:triplex/features/create/domain/stop_item_model.dart';
+import 'package:triplex/features/map/data/google_maps_repo.dart';
+import 'package:triplex/features/map/domain/POI_place.dart';
 
 part 'goal_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class GoalNotifier extends _$GoalNotifier {
   @override
-  StopItemModel build() => StopItemModel(title: "", role: StopType.end);
+  StopItemModel build() =>
+      StopItemModel(title: "Destination", role: StopType.end);
 
   Future<POIPlace> fetchPlaceDetails(String placeId, {LatLng? latLng}) async {
     final repo = ref.read(googleMapsRepoProvider);

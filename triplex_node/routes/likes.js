@@ -1,15 +1,16 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import {
-  likePost,
-  unlikePost,
-  getPostLikes
+  reactToPost,
+  removePostReaction,
+  getPostReactions
 } from '../controllers/likeController.js';
 
 const router = express.Router();
 
-router.post('/:postId/like', authenticateToken, likePost);
-router.delete('/:postId/like', authenticateToken, unlikePost);
-router.get('/:postId/likes', getPostLikes);
+// ── Post reactions ───────────────────────────────────────
+router.post('/:postId/like', authenticate, reactToPost);
+router.delete('/:postId/like', authenticate, removePostReaction);
+router.get('/:postId/likes', getPostReactions);
 
 export default router;

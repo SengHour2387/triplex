@@ -5,6 +5,11 @@ import pool from './db.js';
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
 import mapRoutes from './routes/map.js';
+import tripPlanRoutes from './routes/tripPlans.js';
+import postRoutes from './routes/posts.js';
+import commentRoutes from './routes/comments.js';
+import likeRoutes from './routes/likes.js';
+import userRoutes from './routes/users.js';
 
 dotenv.config();
 
@@ -26,6 +31,11 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/map', mapRoutes);
+app.use('/api/trip-plans', tripPlanRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/users', userRoutes);
 
 
 // Health check route
@@ -47,6 +57,10 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`\u001b[32mServer running on port ${process.env.PORT}\u001b[0m`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`\u001b[32mServer running on port ${port}\u001b[0m`);
+  });
+}
+
+export default app;

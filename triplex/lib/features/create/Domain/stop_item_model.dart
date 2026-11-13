@@ -31,21 +31,32 @@ class StopItemModel {
     this.sortOrder = 0,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? DateTime.now(),
-       updatedAt = updatedAt ?? DateTime.now();
+  })  : id = id ?? const Uuid().v4(),
+        createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
   factory StopItemModel.fromJson(Map<String, dynamic> json) {
     return StopItemModel(
       id: json['id'],
-      title: json['title'] ,
-      role: json["role"] ,
+      title: json['title'],
+      role: json['role'] is StopType
+          ? json['role']
+          : StopType.values.firstWhere(
+              (e) => e.name == json['role'],
+              orElse: () => StopType.waypoint,
+            ),
       location: json['location'],
       placeId: json['place_id'],
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      latitude: json['latitude'] != null
+          ? double.tryParse(json['latitude'].toString())
+          : null,
+      longitude: json['longitude'] != null
+          ? double.tryParse(json['longitude'].toString())
+          : null,
       description: json['description'],
-      cost: json['cost'] != null ? (json['cost'] as num).toDouble() : null,
+      cost: json['cost'] != null
+          ? double.tryParse(json['cost'].toString())
+          : null,
       currency: json['currency'],
       sortOrder: json['sort_order'] ?? 0,
       createdAt: json['created_at'] != null

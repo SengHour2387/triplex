@@ -15,15 +15,15 @@ const createTripPlanProvider = CreateTripPlanNotifierProvider._();
 final class CreateTripPlanNotifierProvider
     extends $NotifierProvider<CreateTripPlanNotifier, TripPlanModel> {
   const CreateTripPlanNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'createTripPlanProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'createTripPlanProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$createTripPlanNotifierHash();
@@ -42,7 +42,7 @@ final class CreateTripPlanNotifierProvider
 }
 
 String _$createTripPlanNotifierHash() =>
-    r'951224155f72af63f6e0df6c78b09f776c75ddb6';
+    r'e2429bfbc0b4100bac571f795123df457b2271d4';
 
 abstract class _$CreateTripPlanNotifier extends $Notifier<TripPlanModel> {
   TripPlanModel build();
@@ -51,14 +51,11 @@ abstract class _$CreateTripPlanNotifier extends $Notifier<TripPlanModel> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<TripPlanModel, TripPlanModel>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<TripPlanModel, TripPlanModel>,
-              TripPlanModel,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<TripPlanModel, TripPlanModel>,
+        TripPlanModel,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

@@ -15,15 +15,15 @@ const goalProvider = GoalNotifierProvider._();
 final class GoalNotifierProvider
     extends $NotifierProvider<GoalNotifier, StopItemModel> {
   const GoalNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'goalProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'goalProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$goalNotifierHash();
@@ -41,7 +41,7 @@ final class GoalNotifierProvider
   }
 }
 
-String _$goalNotifierHash() => r'4c95d047a704b9fb0d2b4933f55327516a013aa0';
+String _$goalNotifierHash() => r'201ef3f96f9d97dc97cb74697ca77bd7f8616db1';
 
 abstract class _$GoalNotifier extends $Notifier<StopItemModel> {
   StopItemModel build();
@@ -50,14 +50,11 @@ abstract class _$GoalNotifier extends $Notifier<StopItemModel> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<StopItemModel, StopItemModel>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<StopItemModel, StopItemModel>,
-              StopItemModel,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<StopItemModel, StopItemModel>,
+        StopItemModel,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

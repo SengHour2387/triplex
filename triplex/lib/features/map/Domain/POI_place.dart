@@ -36,13 +36,13 @@ class POIPlace {
   }
 
   Map<String, dynamic> toJson() => {
-    'placeId': placeId,
-    'lat': latLng?.latitude,
-    'lng': latLng?.longitude,
-    'name': name,
-    'rating': rating,
-    'userRatingsTotal': userRatingsTotal,
-    'status': status,
-    'phone': phone,
-  };
+        'placeId': placeId,
+        'lat': latLng?.latitude,
+        'lng': latLng?.longitude,
+        'name': name,
+        'rating': rating,
+        'userRatingsTotal': userRatingsTotal,
+        'status': status,
+        'phone': phone,
+      };
 }

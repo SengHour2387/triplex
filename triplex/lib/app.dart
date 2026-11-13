@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/router/app_router.dart';
+import 'package:triplex/core/router/app_router.dart';
+import 'package:triplex/core/toast/toast_overlay.dart';
+import 'package:triplex/features/settings/domain/theme_mode_provider.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp.router(
+      routerConfig: router,
       title: 'Triplex',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate, // Important!
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('de', ''), // German
+        Locale('tr', ''), // Turkish
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: const ColorScheme(
@@ -20,7 +35,7 @@ class App extends ConsumerWidget {
           secondary: Color(0xFF666666),
           onSecondary: Color(0xFFFFFFFF),
           surface: Color(0xFFF2F2F2),
-          surfaceBright:  Color(0xFFFFFFFF),
+          surfaceBright: Color(0xFFFFFFFF),
           onSurface: Color(0xFF000000),
           error: Color(0xFFB00020),
           onError: Color(0xFFFFFFFF),
@@ -40,9 +55,10 @@ class App extends ConsumerWidget {
           onError: Color(0xFF000000),
         ),
       ),
-      themeMode: ThemeMode.system,
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
+      themeMode: themeMode,
+      // ToastOverlay lives here so ScaffoldMessenger is available to it.
+      builder: (context, child) =>
+          ToastOverlay(child: child ?? const SizedBox.shrink()),
     );
   }
 }

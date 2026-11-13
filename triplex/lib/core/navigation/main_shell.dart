@@ -1,13 +1,10 @@
-import 'dart:io';
-
-import 'package:cupertino_native_better/cupertino_native.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:triplex/features/auth/Screen/LoginScreen.dart';
-
-import '../../features/auth/Domain/AuthNotifier.dart';
-import '../widgets/AdaptiveIcon.dart';
+import 'package:triplex/features/auth/domain/auth_notifier.dart';
+import 'package:triplex/features/auth/presentation/screens/login_screen.dart';
+import 'package:triplex/features/feed/domain/notifiers/feed_scroll_notifier.dart';
 
 class MainShell extends ConsumerWidget {
   const MainShell({super.key, required this.navigationShell});
@@ -16,114 +13,71 @@ class MainShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authNotifier = ref.watch(authProvider);
+    final isMinimized = ref.watch(feedScrollMinimizedProvider);
+    final isFeedTab = navigationShell.currentIndex == 1;
+    final hideTabBar = isFeedTab && isMinimized;
 
     return authNotifier.when(
       data: (data) {
         if (data == null) {
-          return LoginScreen();
+          return const LoginScreen();
         } else {
           return Scaffold(
-            extendBodyBehindAppBar: true,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            body: navigationShell,
-            bottomNavigationBar:
-
-            Platform.isIOS ?
-
-            CNTabBar(
-              shrinkCentered: false,
-                items: [
-                  CNTabBarItem(
-                    label: "Discover",
-                    icon: CNSymbol("house",size: 16),
-                    activeIcon: CNSymbol("house.fill",size: 16),
+            bottomNavigationBar: hideTabBar
+                ? null
+                : CupertinoTabBar(
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.house),
+                        activeIcon: Icon(CupertinoIcons.house_fill),
+                        label: 'Home',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.news),
+                        activeIcon: Icon(CupertinoIcons.news_solid),
+                        label: 'Feed',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.add_circled),
+                        activeIcon: Icon(CupertinoIcons.add_circled_solid),
+                        label: 'Create',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.chat_bubble),
+                        activeIcon: Icon(CupertinoIcons.chat_bubble_fill),
+                        label: 'Messages',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.person),
+                        activeIcon: Icon(CupertinoIcons.person_solid),
+                        label: 'Profile',
+                      ),
+                    ],
+                    currentIndex: navigationShell.currentIndex,
+                    onTap: _onTap,
                   ),
-                  CNTabBarItem(
-                      label: "Feed",
-                      icon: CNSymbol("list.dash.header.rectangle",size: 16),
-                      activeIcon: CNSymbol("list.bullet.rectangle.fill",size: 16)
+            body: Stack(
+              children: [
+                navigationShell,
+                // Floating Minimized Feed Tab
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AnimatedSlide(
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeOutBack,
+                      offset: hideTabBar ? Offset.zero : const Offset(0, 2),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: hideTabBar ? 1.0 : 0.0,
+                        child: _buildFloatingFeedTab(context, ref),
+                      ),
+                    ),
                   ),
-                  CNTabBarItem(
-                      // label: "Create",
-                      icon: CNSymbol("plus.circle",size: 26),
-                      activeIcon: CNSymbol("plus.circle.fill",size: 26),
-                  ),
-                  CNTabBarItem(
-                      label: "Message",
-                      icon: CNSymbol("message.badge",size: 16),
-                      activeIcon: CNSymbol("message.badge.fill",size: 16)
-                  ),
-                  CNTabBarItem(
-                      label: "Profile",
-                      icon: CNSymbol("person.crop.circle",size: 16),
-                      activeIcon: CNSymbol("person.crop.circle.fill",size: 16)
-                  ),
-                ],
-                currentIndex: navigationShell.currentIndex,
-                onTap: _onTap
-            )
-                :
-
-            ClipRRect(
-              child: BackdropFilter(
-                filter:  Platform.isIOS ? .blur(sigmaX:0, sigmaY:0): .blur(sigmaX:20, sigmaY:20),
-                child: NavigationBar(
-                  height: 70,
-                  maintainBottomViewPadding: false,
-                  indicatorShape: const CircleBorder(),
-                  indicatorColor: Colors.transparent,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.surface.withAlpha(0),
-                  selectedIndex: navigationShell.currentIndex,
-                  onDestinationSelected: _onTap,
-                  labelBehavior:
-                      NavigationDestinationLabelBehavior.onlyShowSelected,
-                  destinations: [
-                    NavigationDestination(
-                      icon: AdaptiveIcon(icon: "assets/icons/home_outline.svg"),
-                      selectedIcon: AdaptiveIcon(
-                        icon: "assets/icons/home_bold.svg",
-                      ),
-                      label: 'Home',
-                    ),
-                    const NavigationDestination(
-                      icon: AdaptiveIcon(icon: "assets/icons/feed_outline.svg"),
-                      selectedIcon: AdaptiveIcon(
-                        icon: "assets/icons/feed_bold.svg",
-                      ),
-                      label: 'Feed',
-                    ),
-                    const NavigationDestination(
-                      icon: AdaptiveIcon(icon: "assets/icons/create_bold.svg"),
-                      selectedIcon: AdaptiveIcon(
-                        icon: "assets/icons/create_outline.svg",
-                      ),
-                      label: 'Create',
-                    ),
-                    const NavigationDestination(
-                      icon: AdaptiveIcon(
-                        icon: "assets/icons/message_outline.svg",
-                      ),
-                      selectedIcon: AdaptiveIcon(
-                        icon: "assets/icons/message_bold.svg",
-                      ),
-                      label: 'Messages',
-                    ),
-                    const NavigationDestination(
-                      icon: AdaptiveIcon(
-                        icon: "assets/icons/profile_outline.svg",
-                      ),
-                      selectedIcon: AdaptiveIcon(
-                        icon: "assets/icons/profile_bold.svg",
-                      ),
-                      label: 'Profile',
-                    ),
-                  ],
                 ),
-              ),
+              ],
             ),
-            extendBody: true,
           );
         }
       },
@@ -133,6 +87,19 @@ class MainShell extends ConsumerWidget {
       loading: () {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       },
+    );
+  }
+
+  Widget _buildFloatingFeedTab(BuildContext context, WidgetRef ref) {
+    return Transform.scale(
+      scale: 0.8,
+      child: CupertinoButton.filled(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        onPressed: () {
+          ref.read(feedScrollMinimizedProvider.notifier).setMinimized(false);
+        },
+        child: const Text("Feed"),
+      ),
     );
   }
 
